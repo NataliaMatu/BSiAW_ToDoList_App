@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user_sessions',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,15 @@ STATICFILES_DIRS = (
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'todos:index'
 LOGOUT_REDIRECT_URL = 'login'
+
+# --- ZARZĄDZANIE SESJAMI (nowe) ---
+SESSION_ENGINE = 'user_sessions.backends.db'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_FAILURE_VIEW = 'todoApp.urls.custom_csrf_failure_view'
