@@ -30,3 +30,9 @@ urlpatterns = [
     path('signup/', views_auth.signup, name='signup')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
+
+from django.shortcuts import render
+
+def custom_csrf_failure_view(request, reason=""):
+    return render(request, "session/403_csrf.html", status=403)
+
