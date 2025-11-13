@@ -3,12 +3,39 @@
 <head>
     <title>Login</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; margin-top: 100px; }
-        form { display: inline-block; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input { margin: 10px 0; padding: 8px; width: 200px; }
-        button { padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .error { color: red; margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            text-align: center;
+            margin-top: 100px;
+        }
+        form {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            margin: 10px 0;
+            padding: 8px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -18,12 +45,50 @@
         <div class="error">❌ Incorrect login or password. Please try again.</div>
     {% endif %}
 
-    <form method="post">
+    <form method="post" id="login_form">
         {% csrf_token %}
+
+        <!-- ukryty identyfikator karty -->
+        <input type="hidden" name="browser_id" id="browser_id_input">
+
         {{ form.as_p }}
+
         <button type="submit">Sign in</button>
     </form>
 
     <p>Don't have an account? <a href="{% url 'signup' %}">Create account</a></p>
+
+    <!-- poprawiony generator browser_id -->
+    <script>
+        async function hash(str) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf))
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        (async function () {
+            // unikalny fingerprint per karta
+            const fingerprint = performance.now().toString()
+                                + Math.random().toString()
+                                + window.location.href;
+
+            const browserId = await hash(fingerprint);
+
+            // każda karta = NOWY ID (nawet duplikacja)
+            sessionStorage._browser_id = browserId;
+
+            // przypisz do inputa
+            document.getElementById("browser_id_input").value = browserId;
+
+            console.log("browser_id:", browserId);
+        })();
+
+        // login przesyła browser_id przez GET (pewne 100%)
+        document.getElementById("login_form").addEventListener("submit", function () {
+            this.action = "/login/?browser_id=" + sessionStorage._browser_id;
+        });
+    </script>
+
 </body>
 </html>

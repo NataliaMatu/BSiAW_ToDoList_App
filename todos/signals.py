@@ -1,4 +1,3 @@
-# todos/signals.py
 from importlib import import_module
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
@@ -12,18 +11,17 @@ def get_session_model():
         from django.contrib.sessions.models import Session as DjangoSession
         return DjangoSession
 
+
 @receiver(user_logged_in)
 def kill_other_sessions(sender, user, request, **kwargs):
-    # upewnij się, że sesja ma klucz
     if not request.session.session_key:
         request.session.save()
     current_key = request.session.session_key
     SessionModel = get_session_model()
-    active = SessionModel.objects.filter(expire_date__gt=timezone.now())
-    for s in active:
+    for s in SessionModel.objects.filter(expire_date__gt=timezone.now()):
         try:
             data = s.get_decoded()
         except Exception:
-            data = {}
-        if data.get('_auth_user_id') == str(user.id) and getattr(s, 'session_key', None) != current_key:
+            continue
+        if data.get('_auth_user_id') == str(user.id) and s.session_key != current_key:
             s.delete()

@@ -3,7 +3,6 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Todo
-from django.http import HttpResponseRedirect
 
 @method_decorator(login_required, name='dispatch')
 class IndexView(generic.ListView):
@@ -11,31 +10,25 @@ class IndexView(generic.ListView):
     context_object_name = 'todo_list'
 
     def get_queryset(self):
-        """Return all the latest todos."""
         return Todo.objects.filter(user=self.request.user).order_by('-created_at')
 
 @login_required
 def add(request):
-    title = request.POST['title']
-    Todo.objects.create(title=title, user=request.user)
-
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        if title:
+            Todo.objects.create(title=title, user=request.user)
     return redirect('todos:index')
 
 @login_required
 def delete(request, todo_id):
     todo = get_object_or_404(Todo, pk=todo_id, user=request.user)
     todo.delete()
-
     return redirect('todos:index')
 
 @login_required
 def update(request, todo_id):
     todo = get_object_or_404(Todo, pk=todo_id, user=request.user)
-    isCompleted = request.POST.get('isCompleted', False)
-    if isCompleted == 'on':
-        isCompleted = True
-    
-    todo.isCompleted = isCompleted
-
+    todo.isCompleted = request.POST.get('isCompleted') == 'on'
     todo.save()
     return redirect('todos:index')

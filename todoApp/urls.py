@@ -20,15 +20,20 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
 from todos import views_auth
 from . import settings, views
+from todos.views_auth import CustomLoginView
 
 urlpatterns = [
     path('todos/', include('todos.urls')),
     path('admin/', admin.site.urls),
     path('', views.index),
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    path('signup/', views_auth.signup, name='signup')
+    path('signup/', views_auth.signup, name='signup'),
+    path('session-check/', views_auth.session_check, name='session_check'),
+    path('session-expired/', views.session_expired, name='session_expired'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 urlpatterns += staticfiles_urlpatterns()
 
 from django.shortcuts import render
