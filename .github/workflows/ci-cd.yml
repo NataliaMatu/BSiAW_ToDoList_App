@@ -105,3 +105,35 @@ jobs:
           name: flake8-report
           path: flake8-report.json
           retention-days: 5
+
+#============SOOS (DAST)================
+'''  SOOS-scan:
+    name: SOOS (DAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run SOOS DAST Analysis
+        uses: soos-io/soos-dast-github-action@a7eb40b94c1c81eb76b178ba1befdc21823f86fa
+        with:
+          client_id: ${{ secrets.SOOS_CLIENT_ID }}
+          api_key: ${{ secrets.SOOS_API_KEY }}
+          project_name: "BSiAW_ToDoList_App"
+          scan_mode: "baseline"
+          target_url: "https://www.example.com/"
+          export_format: "Sarif"
+
+      - name: Find and rename SARIF file
+        run: |
+          file=$(find . -name "*.sarif" | head -n 1)
+          if [ -n "$file" ]; then
+            mv "$file" soos.sarif
+            echo "Renamed $file to soos.sarif"
+          else
+            echo "No SARIF file found" && exit 1
+          fi
+                    
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: soos.sarif
+'''
