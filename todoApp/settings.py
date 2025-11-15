@@ -8,6 +8,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://todoapp.pl'
+]
+
 INSTALLED_APPS = [
     'todos.apps.TodosConfig',
     'django.contrib.admin',
