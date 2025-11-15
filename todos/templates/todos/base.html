@@ -20,7 +20,13 @@
           <span class="navbar-text text-light mr-2">
             Logged in as: <strong>{{ user.username }}</strong>
           </span>
-          <a href="{% url 'logout' %}" class="btn btn-outline-warning btn-sm">Sign out</a>
+
+          <!-- poprawiony logout (POST zamiast GET) -->
+          <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-warning btn-sm">Sign out</button>
+          </form>
+
         {% else %}
           <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Sign in</a>
         {% endif %}
@@ -31,7 +37,7 @@
       {% block content %}{% endblock %}
     </div>
 
-    <!-- SESSION MECHANISM -->
+    <!-- SESSION MECHANISM (włączony tylko przy zalogowanym użytkowniku) -->
     {% if user.is_authenticated %}
     <script>
         if (!sessionStorage._browser_id) {
@@ -55,12 +61,12 @@
                     window.location.href = "/session-expired/";
                 }
             })
-            .catch(() => {
-            });
+            .catch(() => {});
         }
 
         setInterval(checkSession, 3000);
     </script>
     {% endif %}
+
   </body>
 </html>
