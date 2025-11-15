@@ -14,10 +14,9 @@ class IndexView(generic.ListView):
 
 @login_required
 def add(request):
-    if request.method == 'POST':
-        title = request.POST.get('title', '').strip()
-        if title:
-            Todo.objects.create(title=title, user=request.user)
+    title = request.POST['title']
+    Todo.objects.create(title=title, user=request.user)
+
     return redirect('todos:index')
 
 @login_required
@@ -26,9 +25,15 @@ def delete(request, todo_id):
     todo.delete()
     return redirect('todos:index')
 
+
 @login_required
 def update(request, todo_id):
     todo = get_object_or_404(Todo, pk=todo_id, user=request.user)
-    todo.isCompleted = request.POST.get('isCompleted') == 'on'
+    isCompleted = request.POST.get('isCompleted', False)
+    if isCompleted == 'on':
+        isCompleted = True
+
+    todo.isCompleted = isCompleted
+
     todo.save()
     return redirect('todos:index')

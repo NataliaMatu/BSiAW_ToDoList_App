@@ -20,13 +20,12 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
 from todos import views_auth
 from . import settings, views
-from todos.views_auth import CustomLoginView
 
 urlpatterns = [
     path('todos/', include('todos.urls')),
     path('admin/', admin.site.urls),
     path('', views.index),
-    path('login/', CustomLoginView.as_view(), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('signup/', views_auth.signup, name='signup'),
     path('session-check/', views_auth.session_check, name='session_check'),
