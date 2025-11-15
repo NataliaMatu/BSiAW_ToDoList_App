@@ -33,5 +33,3 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 
-from django.shortcuts import render
-
