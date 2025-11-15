@@ -104,5 +104,5 @@ LOGOUT_REDIRECT_URL = 'login'
 # KAŻDA karta dostaje osobny session_key.
 #SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-#SESSION_COOKIE_HTTPONLY = True
-#CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
