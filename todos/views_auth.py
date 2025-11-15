@@ -13,10 +13,14 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         browser_id = self.request.GET.get("browser_id")
         response = super().form_valid(form)
+
+        if not self.request.session.session_key:
+            self.request.session.save()
+
         if browser_id:
-            if not self.request.session.session_key:
-                self.request.session.save()
             self.request.session["_browser_id"] = browser_id
+            self.request.session.save()
+
         return response
 
 
@@ -36,16 +40,21 @@ def signup(request):
 def session_check(request):
     if not request.user.is_authenticated:
         return JsonResponse({"valid": False})
+
     try:
         data = json.loads(request.body.decode("utf-8"))
     except Exception:
         return JsonResponse({"valid": False})
+
     browser_id = data.get("browser_id")
     session_browser_id = request.session.get("_browser_id")
+
     if session_browser_id is None:
         return JsonResponse({"valid": True})
+
     if browser_id == session_browser_id:
         return JsonResponse({"valid": True})
+
     return JsonResponse({"valid": False})
 
 
