@@ -60,10 +60,10 @@
 <p>Don't have an account? <a href="{% url 'signup' %}">Create account</a></p>
 
 <script>
-    if (!sessionStorage._browser_id) {
-        sessionStorage._browser_id = crypto.randomUUID();
-    }
-    document.getElementById("browser_id_field").value = sessionStorage._browser_id;
+        if (!localStorage._browser_id) {
+            localStorage._browser_id = crypto.randomUUID();
+        }
+        document.getElementById("browser_id_field").value = localStorage._browser_id;
 </script>
 
 </body>
