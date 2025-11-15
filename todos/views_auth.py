@@ -11,7 +11,7 @@ class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
 
     def form_valid(self, form):
-        browser_id = self.request.GET.get("browser_id")
+        browser_id = self.request.POST.get("browser_id")
         response = super().form_valid(form)
 
         if browser_id:
@@ -49,7 +49,7 @@ def session_check(request):
     if session_browser_id is None:
         return JsonResponse({"valid": True})
 
-    if browser_id == session_browser_id:
+    if session_browser_id == browser_id:
         return JsonResponse({"valid": True})
 
     return JsonResponse({"valid": False})

@@ -19,25 +19,24 @@
     <div class="error">Incorrect login or password.</div>
 {% endif %}
 
-<form method="post" id="login_form">
+<form method="post">
     {% csrf_token %}
+
+    <!-- browser_id z base.html -->
     <input type="hidden" name="browser_id" id="browser_id_input">
+
     {{ form.as_p }}
     <button type="submit">Sign in</button>
 </form>
 
-<p>Don't have an account? <a href="{% url 'signup' %}">Create account</a></p>
-
 <script>
-    if (!sessionStorage._browser_id) {
-        sessionStorage._browser_id = crypto.randomUUID();
+    // zapewnia, że browser_id z base.html trafi do POST
+    function setBrowserId() {
+        document.getElementById("browser_id_input").value = sessionStorage._browser_id || "";
     }
 
-    document.getElementById("browser_id_input").value = sessionStorage._browser_id;
-
-    document.getElementById("login_form").addEventListener("submit", function () {
-        this.action = "/login/?browser_id=" + sessionStorage._browser_id;
-    });
+    setTimeout(setBrowserId, 50);
+    setBrowserId();
 </script>
 
 </body>

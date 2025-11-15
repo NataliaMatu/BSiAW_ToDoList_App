@@ -1,21 +1,61 @@
-<script>
-    if (!sessionStorage._browser_id) {
-        sessionStorage._browser_id = crypto.randomUUID();
-    }
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    function checkSession() {
-        fetch("/session-check/", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({browser_id: sessionStorage._browser_id})
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.valid === false) {
-                window.location.href = "/session-expired/";
-            }
-        });
-    }
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block title %}{% endblock %}
+  </head>
 
-    setInterval(checkSession, 3000);
-</script>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/todos/">📝 Todo App</a>
+
+      <div class="ml-auto">
+        {% if user.is_authenticated %}
+          <span class="navbar-text text-light mr-2">
+            Logged in as: <strong>{{ user.username }}</strong>
+          </span>
+          <a href="{% url 'logout' %}" class="btn btn-outline-warning btn-sm">Sign out</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Sign in</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- SESSION MECHANISM -->
+    <script>
+        // JEDYNE źródło browser_id w całym projekcie
+        if (!sessionStorage._browser_id) {
+            sessionStorage._browser_id = crypto.randomUUID();
+        }
+
+        function checkSession() {
+            fetch("/session-check/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    browser_id: sessionStorage._browser_id
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.valid === false) {
+                    window.location.href = "/session-expired/";
+                }
+            });
+        }
+
+        setInterval(checkSession, 3000);
+    </script>
+
+  </body>
+</html>
