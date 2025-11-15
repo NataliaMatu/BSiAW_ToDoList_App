@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',   # <-- standardowe sesje DJANGO
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'todos.apps.TodosConfig',
 ]
 
 MIDDLEWARE = [
