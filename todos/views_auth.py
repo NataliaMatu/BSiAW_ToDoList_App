@@ -13,12 +13,11 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         browser_id = self.request.POST.get("browser_id")
         response = super().form_valid(form)
-
         if browser_id:
             self.request.session["_browser_id"] = browser_id
             self.request.session.save()
-
         return response
+
 
 
 def signup(request):

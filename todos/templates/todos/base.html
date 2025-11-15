@@ -32,8 +32,8 @@
     </div>
 
     <!-- SESSION MECHANISM -->
+    {% if user.is_authenticated %}
     <script>
-        // JEDYNE źródło browser_id w całym projekcie
         if (!sessionStorage._browser_id) {
             sessionStorage._browser_id = crypto.randomUUID();
         }
@@ -41,7 +41,10 @@
         function checkSession() {
             fetch("/session-check/", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
                 body: JSON.stringify({
                     browser_id: sessionStorage._browser_id
                 })
@@ -51,11 +54,13 @@
                 if (data.valid === false) {
                     window.location.href = "/session-expired/";
                 }
+            })
+            .catch(() => {
             });
         }
 
         setInterval(checkSession, 3000);
     </script>
-
+    {% endif %}
   </body>
 </html>
