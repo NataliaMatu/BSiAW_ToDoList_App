@@ -3,10 +3,12 @@ from django.contrib.sessions.models import Session
 from django.dispatch import receiver
 from django.utils import timezone
 
+print("SIGNAL LOADED")
+
 @receiver(user_logged_in)
 def kill_other_sessions(sender, user, request, **kwargs):
     current_session_key = request.session.session_key
-
+    print("SIGNAL FIRED", user.username, current_session_key)
     # wszystkie aktywne sesje
     sessions = Session.objects.filter(expire_date__gt=timezone.now())
 
