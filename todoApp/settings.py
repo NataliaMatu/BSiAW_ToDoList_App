@@ -106,5 +106,3 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
-
-CSRF_FAILURE_VIEW = 'todoApp.views.custom_csrf_failure_view'

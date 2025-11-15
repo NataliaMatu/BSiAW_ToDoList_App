@@ -16,6 +16,3 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
-
-def session_expired(request):
-    return render(request, 'session/session_expired.html')
