@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',   # <-- standardowe sesje DJANGO
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'todos.apps.TodosConfig',
 ]
 
 MIDDLEWARE = [
@@ -102,7 +103,9 @@ LOGIN_REDIRECT_URL = 'todos:index'
 LOGOUT_REDIRECT_URL = 'login'
 
 # KAŻDA karta dostaje osobny session_key.
-#SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 1200  # 20 min, jak w banku
+SESSION_SAVE_EVERY_REQUEST = True  # resetuje timeout przy każdym żądaniu
