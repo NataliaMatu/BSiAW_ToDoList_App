@@ -11,7 +11,7 @@ def get_session_model():
         from django.contrib.sessions.models import Session as DjangoSession
         return DjangoSession
 
-
+"""
 @receiver(user_logged_in)
 def kill_other_sessions(sender, user, request, **kwargs):
     if not request.session.session_key:
@@ -25,3 +25,4 @@ def kill_other_sessions(sender, user, request, **kwargs):
             continue
         if data.get('_auth_user_id') == str(user.id) and s.session_key != current_key:
             s.delete()
+"""
