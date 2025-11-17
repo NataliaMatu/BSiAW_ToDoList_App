@@ -32,10 +32,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-#      - name: Create .env file
-#        run: |
-#          echo "cert.pem=${{secrets.PEM_CERT}}" >> .env
-
 #============pip-audit (SCA)================
   sca-scan:
     name: pip-audit (SCA)
@@ -107,7 +103,7 @@ jobs:
           retention-days: 5
 
 #============SOOS (DAST)================
-'''  SOOS-scan:
+  SOOS-scan:
     name: SOOS (DAST)
     runs-on: ubuntu-latest
     steps:
@@ -118,7 +114,7 @@ jobs:
           api_key: ${{ secrets.SOOS_API_KEY }}
           project_name: "BSiAW_ToDoList_App"
           scan_mode: "baseline"
-          target_url: "https://www.example.com/"
+          target_url: "https://todoapp.pl"
           export_format: "Sarif"
 
       - name: Find and rename SARIF file
@@ -136,4 +132,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: soos.sarif
-'''
