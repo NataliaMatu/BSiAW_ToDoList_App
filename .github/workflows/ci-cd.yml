@@ -102,7 +102,7 @@ jobs:
           path: flake8-report.json
           retention-days: 5
 
-#============SOOS (DAST)================
+#============SOOS (DAST)=================
   SOOS-scan:
     name: SOOS (DAST)
     runs-on: ubuntu-latest
